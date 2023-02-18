@@ -1,5 +1,7 @@
 import { Col, Row } from "react-bootstrap"
+import ProductCard from "../components/ProductCard"
 import { productArray } from "../productStore"
+import { Product } from "../interfaces/Types"
 
 function Store() {
   return (
@@ -8,10 +10,9 @@ function Store() {
         Welcome to the Store!
       </h1>
       <Row xs={1} md={3} className="g-4">
-        {productArray.map((product, index) => (
+        {productArray.map((product: Product, index) => (
           <Col align="center" key={index}>
-            <h1>{product.title}</h1>
-            <h1>{product.price}</h1>
+            <ProductCard {...product} />
           </Col>
         ))}
       </Row>
