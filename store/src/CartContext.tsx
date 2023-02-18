@@ -1,13 +1,13 @@
 import { createContext, useState, ReactNode } from "react"
-import { Cart, Product } from "./interfaces/Types"
-import { productArray, getProductData } from "./productStore"
+import { Product } from "./interfaces/Types"
+import { getProductData } from "./productStore"
 
 type CartContextType = {
   items: Product[]
-  getProductQuantity: (id: number) => number
-  addOneToCart: (id: number) => void
-  removeOneFromCart: (id: number) => void
-  deleteFromCart: (id: number) => void
+  getProductQuantity: (id: string) => number
+  addOneToCart: (id: string) => void
+  removeOneFromCart: (id: string) => void
+  deleteFromCart: (id: string) => void
   getTotalCost: () => number
 }
 
@@ -27,7 +27,7 @@ type CartProviderProps = {
 export function CartProvider({ children }: CartProviderProps) {
   const [cartProducts, setCartProducts] = useState<Product[]>([])
 
-  function getProductQuantity(id: number) {
+  function getProductQuantity(id: string) {
     const quantity = cartProducts.find((product) => product.id === id)?.quantity
 
     if (quantity === undefined) {
@@ -37,7 +37,7 @@ export function CartProvider({ children }: CartProviderProps) {
     return quantity
   }
 
-  function addOneToCart(id: number) {
+  function addOneToCart(id: string) {
     const quantity = getProductQuantity(id)
 
     if (quantity === 0) {
@@ -53,7 +53,7 @@ export function CartProvider({ children }: CartProviderProps) {
     }
   }
 
-  function removeOneFromCart(id: number) {
+  function removeOneFromCart(id: string) {
     const quantity = getProductQuantity(id)
 
     if (quantity === 1) {
@@ -69,7 +69,7 @@ export function CartProvider({ children }: CartProviderProps) {
     }
   }
 
-  function deleteFromCart(id: number) {
+  function deleteFromCart(id: string) {
     setCartProducts(cartProducts.filter((product) => product.id !== id))
   }
 
@@ -77,7 +77,9 @@ export function CartProvider({ children }: CartProviderProps) {
     let totalCost = 0
     cartProducts.forEach((cartItem) => {
       const productData = getProductData(cartItem.id)
-      totalCost += productData.price * cartItem.quantity
+      if (productData !== undefined && productData.price !== undefined) {
+        totalCost += productData.price * cartItem.quantity
+      }
     })
     return totalCost
   }
